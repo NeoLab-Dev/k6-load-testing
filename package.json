@@ -1,5 +1,5 @@
 {
-  "name": "${PROJECT_NAME}",
+  "name": "k6-load-testing",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",

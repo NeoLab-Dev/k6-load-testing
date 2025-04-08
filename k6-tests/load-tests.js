@@ -1,7 +1,7 @@
 import http from 'k6/http';
-import {check, sleep} from 'k6';
-import {envConfig} from "./env-config.js";
-import {buildHeaders} from "./utils.js";
+import { check, sleep } from 'k6';
+import { envConfig } from "./env-config.js";
+import { buildHeaders } from "./utils.js";
 
 const ENV = __ENV.ENV || 'qa';
 const config = envConfig[ENV];

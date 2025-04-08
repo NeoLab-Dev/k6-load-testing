@@ -41,4 +41,3 @@ services:
       - ./k6-tests:/k6-tests
     depends_on:
       - influxdb
-    command: run /k6-tests/script.js
