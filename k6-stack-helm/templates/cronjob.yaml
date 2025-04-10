@@ -28,4 +28,4 @@ spec:
             - name: test-scripts
               configMap:
                 name: k6-scripts
-  backoffLimit: 3
+  backoffLimit: 2
