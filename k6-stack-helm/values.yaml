@@ -4,13 +4,16 @@ influxdb:
   db: k6
 
 grafana:
+  datasources:
+    enabled: true
+    configMapName: grafana-datasources
   image: grafana/grafana:11.6.0
   port: 3000
   adminRole: Admin
   anonymousAccess: true
   dashboardsPath: /var/lib/grafana/dashboards
-  provisioningPath: /etc/grafana/provisioning/dashboards/dashboard
-  datasourcesPath: /etc/grafana/provisioning/datasources/datasource
+  provisioningPath: /etc/grafana/provisioning/dashboards
+  datasourcesPath: /etc/grafana/provisioning/datasources
 
 k6:
   image: grafana/k6:1.0.0-rc1

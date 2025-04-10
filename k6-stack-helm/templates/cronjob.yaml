@@ -29,4 +29,4 @@ spec:
               configMap:
                 name: k6-scripts
   successfulJobsHistoryLimit: 3
-  failedJobsHistoryLimit: 2              
+  failedJobsHistoryLimit: 2               
