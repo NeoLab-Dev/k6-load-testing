@@ -1,0 +1,19 @@
+influxdb:
+  image: influxdb:1.8
+  port: 8086
+  db: k6
+
+grafana:
+  image: grafana/grafana:11.6.0
+  port: 3000
+  adminRole: Admin
+  anonymousAccess: true
+  dashboardsPath: /var/lib/grafana/dashboards
+  provisioningPath: /etc/grafana/provisioning/dashboards/dashboard
+  datasourcesPath: /etc/grafana/provisioning/datasources/datasource
+
+k6:
+  image: grafana/k6:1.0.0-rc1
+  port: 6565
+  influxdbURL: http://influxdb:8086/k6
+  testScriptsPath: /k6-tests

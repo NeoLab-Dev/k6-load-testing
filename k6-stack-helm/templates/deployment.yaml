@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: influxdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: influxdb
+  template:
+    metadata:
+      labels:
+        app: influxdb
+    spec:
+      containers:
+      - name: influxdb
+        image: "{{ .Values.influxdb.image }}"
+        ports:
+        - containerPort: {{ .Values.influxdb.port }}
+        env:
+        - name: INFLUXDB_DB
+          value: "{{ .Values.influxdb.db }}"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+      - name: grafana
+        image: "{{ .Values.grafana.image }}"
+        ports:
+        - containerPort: {{ .Values.grafana.port }}
+        env:
+        - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+          value: "{{ .Values.grafana.adminRole }}"
+        - name: GF_AUTH_ANONYMOUS_ENABLED
+          value: "true"
+        - name: GF_PROVISIONING_ENABLED
+          value: "true"
+        - name: GF_AUTH_BASIC_ENABLED
+          value: "false"
+        - name: GF_SERVER_SERVE_FROM_SUB_PATH
+          value: "true"
+        volumeMounts:
+        - name: dashboards
+          mountPath: "{{ .Values.grafana.dashboardsPath }}"
+        - name: provisioning
+          mountPath: "{{ .Values.grafana.provisioningPath }}"
+        - name: datasources
+          mountPath: "{{ .Values.grafana.datasourcesPath }}"
+      volumes:
+        - name: dashboards
+          configMap:
+            name: grafana-dashboards
+        - name: provisioning
+          configMap:
+            name: grafana-provisioning
+        - name: datasources
+          configMap:
+            name: grafana-datasources
+---

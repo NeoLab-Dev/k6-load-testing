@@ -1,0 +1,4 @@
+apiVersion: v2
+name: k6-stack-helm
+description: Helm chart for running k6 with InfluxDB and Grafana
+version: 0.1.0

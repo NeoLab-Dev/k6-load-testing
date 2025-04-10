@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: k6-cronjob
+spec:
+  schedule: "*/5 * * * *"  # Пример: запускать каждые 5 минут
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: k6
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: k6
+            image: "{{ .Values.k6.image }}"
+            ports:
+            - containerPort: {{ .Values.k6.port }}
+            env:
+            - name: K6_OUT
+              value: "influxdb={{ .Values.k6.influxdbURL }}"
+            volumeMounts:
+            - name: test-scripts
+              mountPath: "{{ .Values.k6.testScriptsPath }}"
+            command: ["k6", "run", "/k6-tests/load-tests.js"]
+          volumes:
+            - name: test-scripts
+              configMap:
+                name: k6-scripts
+  backoffLimit: 4
