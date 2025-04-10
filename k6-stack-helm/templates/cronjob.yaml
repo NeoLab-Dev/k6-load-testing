@@ -28,3 +28,5 @@ spec:
             - name: test-scripts
               configMap:
                 name: k6-scripts
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1                
