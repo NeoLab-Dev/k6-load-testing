@@ -1,6 +1,6 @@
 export const envConfig = {
     qa: {
-        baseUrl: 'https://qa.rxwizard.com/api/v1',
+        baseUrl: 'https://qa.rxwizard.com',
         doctorUsername: 'k6LoadTestingDoctor',
         doctorPassword: '70N*S7=+x#WC',
         officeId: 677,

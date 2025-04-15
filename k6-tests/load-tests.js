@@ -75,7 +75,7 @@ export const options = {
 };
 
 export function setup() {
-    const url = `${config.baseUrl}/auth/login/`;
+    const url = `${config.baseUrl}/api/v1/auth/login/`;
     const payload = JSON.stringify({
         username: config.doctorUsername,
         password: config.doctorPassword,
@@ -100,7 +100,7 @@ export function setup() {
 }
 
 function postDueDates(authToken) {
-    const url = `${config.baseUrl}/due-dates`;
+    const url = `${config.baseUrl}/api/v1/due-dates`;
     const payload = JSON.stringify(config.dueDatesPayload);
     const headers = buildHeaders(authToken, {}, postDueDatesTag);
 
@@ -115,7 +115,7 @@ function postDueDates(authToken) {
 }
 
 function postCreateCase(authToken, due_date) {
-    const url = `${config.baseUrl}/cases`;
+    const url = `${config.baseUrl}/api/v1/cases`;
     const payload = JSON.stringify({
         ...config.createCasePayload,
         due_date: due_date,
@@ -133,7 +133,7 @@ function postCreateCase(authToken, due_date) {
 }
 
 function getCase(authToken, caseId) {
-    const url = `${config.baseUrl}/cases/${caseId}`;
+    const url = `${config.baseUrl}/api/v1/cases/${caseId}`;
     const headers = buildHeaders(authToken, {}, getCaseTag);
 
     const response = http.get(url, headers);
@@ -146,7 +146,7 @@ function getCase(authToken, caseId) {
 }
 
 function deleteCase(authToken, caseId) {
-    const url = `${config.baseUrl}/cases/${caseId}`;
+    const url = `${config.baseUrl}/api/v1/cases/${caseId}`;
     const headers = buildHeaders(authToken, {}, deleteCaseTag);
 
     const response = http.del(url, headers);
@@ -158,16 +158,16 @@ function deleteCase(authToken, caseId) {
 
 export function loadTestCreateCaseOnDoctorSide(data) {
     let requests = [
-        ['GET', `${config.baseUrl}/offices/${config.officeId}`, null, buildHeaders(data.authToken, {}, getOfficeTag)],
-        ['GET', `${config.baseUrl}/client-users/${config.clientId}`, null, buildHeaders(data.authToken, {}, getClientTag)],
-        ['GET', `${config.baseUrl}/impressions/`, null, buildHeaders(data.authToken, { get_all: true }, getAllImpressionsTag)],
-        ['GET', `${config.baseUrl}/types/`, null, buildHeaders(data.authToken, { get_all: true }, getAllTypesTag)],
-        ['GET', `${config.baseUrl}/categories/`, null, buildHeaders(data.authToken, { get_all: true }, getAllCategoriesTag)],
-        ['GET', `${config.baseUrl}/appliances/`, null, buildHeaders(data.authToken, { get_all: true }, getAllAppliancesTag)],
-        ['GET', `${config.baseUrl}/rx-mappings/`, null, buildHeaders(data.authToken, {}, getRxMappingsTag)],
-        ['GET', `${config.baseUrl}/stickers/`, null, buildHeaders(data.authToken, { get_all: true }, getAllStickersTag)],
+        ['GET', `${config.baseUrl}/api/v1/offices/${config.officeId}`, null, buildHeaders(data.authToken, {}, getOfficeTag)],
+        ['GET', `${config.baseUrl}/api/v1/client-users/${config.clientId}`, null, buildHeaders(data.authToken, {}, getClientTag)],
+        ['GET', `${config.baseUrl}/api/v1/impressions/`, null, buildHeaders(data.authToken, { get_all: true }, getAllImpressionsTag)],
+        ['GET', `${config.baseUrl}/api/v1/types/`, null, buildHeaders(data.authToken, { get_all: true }, getAllTypesTag)],
+        ['GET', `${config.baseUrl}/api/v1/categories/`, null, buildHeaders(data.authToken, { get_all: true }, getAllCategoriesTag)],
+        ['GET', `${config.baseUrl}/api/v1/appliances/`, null, buildHeaders(data.authToken, { get_all: true }, getAllAppliancesTag)],
+        ['GET', `${config.baseUrl}/api/v1/rx-mappings/`, null, buildHeaders(data.authToken, {}, getRxMappingsTag)],
+        ['GET', `${config.baseUrl}/api/v1/stickers/`, null, buildHeaders(data.authToken, { get_all: true }, getAllStickersTag)],
         ['GET',
-            `${config.baseUrl}/impression/${config.impression}` +
+            `${config.baseUrl}/api/v1/impression/${config.impression}` +
             `/type/${config.type}` +
             `/jawtype/${config.jawtype}` +
             `/category/${config.category}` +
