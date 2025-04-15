@@ -33,7 +33,7 @@ const allScenarios = {
     createCaseOnDoctorSide: {
         executor: 'ramping-vus',
         stages: buildStages(rampUpSteps, rampDownSteps, stepDuration, maxVUs, holdDuration),
-        exec: 'createCaseOnDoctorSideLoadTest',
+        exec: 'loadTestCreateCaseOnDoctorSide',
     },
     doctorCasesPage: {
         executor: 'ramping-vus',
