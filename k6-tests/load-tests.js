@@ -1,36 +1,81 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 import { envConfig } from "./env-config.js";
-import { buildHeaders } from "./utils.js";
+import { buildHeaders, buildStages, buildThresholds } from "./utils.js";
+
+const rampUpSteps = parseInt(__ENV.RAMP_UP_STEPS || '2', 10);
+const rampDownSteps = parseInt(__ENV.RAMP_DOWN_STEPS || '2', 10);
+const stepDuration = __ENV.STEP_DURATION || '1m';
+const holdDuration = __ENV.HOLD_DURATION || '1m';
+const maxVUs = parseInt(__ENV.MAX_VUS || '6', 10);
 
 const ENV = __ENV.ENV || 'qa';
 const config = envConfig[ENV];
 
+const SELECTED_SCENARIO = __ENV.SCENARIO || 'all';
+
+const getOfficeTag = `GET /offices/${config.officeId}`;
+const getClientTag = `GET /client-users/${config.clientId}`;
+const getAllImpressionsTag = `GET ALL /impressions`;
+const getAllTypesTag = `GET ALL /types`;
+const getAllCategoriesTag = `GET ALL /categories`;
+const getAllAppliancesTag = `GET ALL /appliances`;
+const getRxMappingsTag = `GET /rx-mappings`;
+const getAllStickersTag = `GET ALL /stickers`;
+const getRxWizardGroupsTag = `GET /rxwizard_groups`;
+const postDueDatesTag = 'POST /due-dates';
+const postCreateCaseTag = `POST /cases`;
+const getCaseTag = `GET /cases/:id`;
+const deleteCaseTag = `DELETE /cases/:id`;
+const getDoctorCasesPageTag = 'GET /doctor/cases';
+
+const allScenarios = {
+    createCaseOnDoctorSide: {
+        executor: 'ramping-vus',
+        stages: buildStages(rampUpSteps, rampDownSteps, stepDuration, maxVUs, holdDuration),
+        exec: 'createCaseOnDoctorSideLoadTest',
+    },
+    doctorCasesPage: {
+        executor: 'ramping-vus',
+        stages: buildStages(rampUpSteps, rampDownSteps, stepDuration, maxVUs, holdDuration),
+        exec: 'loadTestDoctorCasesPage',
+    }
+}
+const enabledScenarioNames = SELECTED_SCENARIO === 'all'
+    ? Object.keys(allScenarios)
+    : SELECTED_SCENARIO.split(',').map(s => s.trim());
+const filteredScenarios = Object.fromEntries(
+    Object.entries(allScenarios).filter(([name]) => enabledScenarioNames.includes(name))
+);
+
+const scenarioTags = {
+    createCaseOnDoctorSide: [
+        getOfficeTag,
+        getClientTag,
+        getAllImpressionsTag,
+        getAllTypesTag,
+        getAllCategoriesTag,
+        getAllAppliancesTag,
+        getRxMappingsTag,
+        getAllStickersTag,
+        getRxWizardGroupsTag,
+        postDueDatesTag,
+        postCreateCaseTag,
+        getCaseTag,
+        deleteCaseTag,
+    ],
+    doctorCasesPage: [
+        getDoctorCasesPageTag,
+    ],
+};
+
 export const options = {
-    scenarios: {
-        loadTestingScenario: {
-            executor: 'ramping-vus',
-            startVUs: 0,
-            gracefulRampDown: '30s',
-            stages: [
-                { duration: '10s', target: 3 },
-                { duration: '5s', target: 5 },
-                { duration: '10s', target: 10 },
-                { duration: '5s', target: 6 },
-                { duration: '10s', target: 0 },
-            ],
-            exec: 'testAPI',
-        },
-    },
-    thresholds: {
-        'http_req_duration{name:POST /due-dates}': ['p(95)<2000'],
-        'http_req_failed': ['rate<0.01'],
-        'checks': ['rate>0.95'],
-    },
+    scenarios: filteredScenarios,
+    thresholds: buildThresholds(enabledScenarioNames, scenarioTags),
 };
 
 export function setup() {
-    const url = `${config.baseUrl}/auth/login/`;
+    const url = `${config.baseUrl}/api/v1/auth/login/`;
     const payload = JSON.stringify({
         username: config.doctorUsername,
         password: config.doctorPassword,
@@ -54,21 +99,155 @@ export function setup() {
     return { authToken: authToken }
 }
 
-function postDueDates(data) {
-    const url = `${config.baseUrl}/due-dates`;
+function postDueDates(authToken) {
+    const url = `${config.baseUrl}/api/v1/due-dates`;
     const payload = JSON.stringify(config.dueDatesPayload);
-    const headers = buildHeaders(data.authToken, {}, 'POST /due-dates')
+    const headers = buildHeaders(authToken, {}, postDueDatesTag);
 
     const response = http.post(url, payload, headers);
 
     check(response, {
-        'POST /due-dates is 200': (r) => r.status === 200,
-        'has due_date in response': (r) => r.json('due_date') !== undefined,
+        [`${postDueDatesTag} is 200`]: (r) => r.status === 200,
+        [`${postDueDatesTag} has due_date in response`]: (r) => r.json('due_date') !== undefined,
+    });
+
+    return response.json('due_date');
+}
+
+function postCreateCase(authToken, due_date) {
+    const url = `${config.baseUrl}/api/v1/cases`;
+    const payload = JSON.stringify({
+        ...config.createCasePayload,
+        due_date: due_date,
+    });
+    const headers = buildHeaders(authToken, {}, postCreateCaseTag);
+
+    const response = http.post(url, payload, headers);
+
+    check(response, {
+        [`${postCreateCaseTag} is 201`]: (r) => r.status === 201,
+        [`${postCreateCaseTag} has id in response`]: (r) => r.json('id') !== undefined,
+    });
+
+    return response.json('id');
+}
+
+function getCase(authToken, caseId) {
+    const url = `${config.baseUrl}/api/v1/cases/${caseId}`;
+    const headers = buildHeaders(authToken, {}, getCaseTag);
+
+    const response = http.get(url, headers);
+
+    check(response, {
+        [`${getCaseTag} is 200`]: (r) => r.status === 200,
+        [`${getCaseTag} has id in response`]: (r) => r.json('id') !== undefined,
+        [`${getCaseTag} id is equal ${caseId}`]: (r) => r.json('id') === caseId,
     });
 }
 
-export function testAPI(data) {
-    postDueDates(data)
+function deleteCase(authToken, caseId) {
+    const url = `${config.baseUrl}/api/v1/cases/${caseId}`;
+    const headers = buildHeaders(authToken, {}, deleteCaseTag);
 
+    const response = http.del(url, headers);
+
+    check(response, {
+        [`${deleteCaseTag} is 204`]: (r) => r.status === 204,
+    });
+}
+
+export function loadTestCreateCaseOnDoctorSide(data) {
+    let requests = [
+        ['GET', `${config.baseUrl}/api/v1/offices/${config.officeId}`, null, buildHeaders(data.authToken, {}, getOfficeTag)],
+        ['GET', `${config.baseUrl}/api/v1/client-users/${config.clientId}`, null, buildHeaders(data.authToken, {}, getClientTag)],
+        ['GET', `${config.baseUrl}/api/v1/impressions/`, null, buildHeaders(data.authToken, { get_all: true }, getAllImpressionsTag)],
+        ['GET', `${config.baseUrl}/api/v1/types/`, null, buildHeaders(data.authToken, { get_all: true }, getAllTypesTag)],
+        ['GET', `${config.baseUrl}/api/v1/categories/`, null, buildHeaders(data.authToken, { get_all: true }, getAllCategoriesTag)],
+        ['GET', `${config.baseUrl}/api/v1/appliances/`, null, buildHeaders(data.authToken, { get_all: true }, getAllAppliancesTag)],
+        ['GET', `${config.baseUrl}/api/v1/rx-mappings/`, null, buildHeaders(data.authToken, {}, getRxMappingsTag)],
+        ['GET', `${config.baseUrl}/api/v1/stickers/`, null, buildHeaders(data.authToken, { get_all: true }, getAllStickersTag)],
+        ['GET',
+            `${config.baseUrl}/api/v1/impression/${config.impression}` +
+            `/type/${config.type}` +
+            `/jawtype/${config.jawtype}` +
+            `/category/${config.category}` +
+            `/appliance/${config.appliance}` +
+            `/rxwizard-groups`,
+            null,
+            buildHeaders(data.authToken, { is_test_office: true }, getRxWizardGroupsTag)
+        ],
+    ];
+
+    const response = http.batch(requests);
+
+    check(response[0], {
+        [`${getOfficeTag} is 200`]: (r) => r.status === 200,
+        [`${getOfficeTag} has id in response`]: (r) => r.json('id') !== undefined,
+        [`${getOfficeTag} id is equal ${config.officeId}`]: (r) => r.json('id') === config.officeId,
+    });
+
+    check(response[1], {
+        [`${getClientTag} is 200`]: (r) => r.status === 200,
+        [`${getClientTag} has id in response`]: (r) => r.json('id') !== undefined,
+        [`${getClientTag} id is equal ${config.clientId}`]: (r) => r.json('id') === config.clientId,
+    });
+
+    check(response[2], {
+        [`${getAllImpressionsTag} is 200`]: (r) => r.status === 200,
+        [`${getAllImpressionsTag} has results array`]: (r) => Array.isArray(r.json('results')),
+    });
+
+    check(response[3], {
+        [`${getAllTypesTag} is 200`]: (r) => r.status === 200,
+        [`${getAllTypesTag} has results array`]: (r) => Array.isArray(r.json('results')),
+    });
+
+    check(response[4], {
+        [`${getAllCategoriesTag} is 200`]: (r) => r.status === 200,
+        [`${getAllCategoriesTag} has results array`]: (r) => Array.isArray(r.json('results')),
+    });
+
+    check(response[5], {
+        [`${getAllAppliancesTag} is 200`]: (r) => r.status === 200,
+        [`${getAllAppliancesTag} has results array`]: (r) => Array.isArray(r.json('results')),
+    });
+
+    check(response[6], {
+        [`${getRxMappingsTag} is 200`]: (r) => r.status === 200,
+        [`${getRxMappingsTag} has published`]: (r) => r.json('published') !== undefined,
+        [`${getRxMappingsTag} has testing`]: (r) => r.json('testing') !== undefined,
+    });
+
+    check(response[7], {
+        [`${getAllStickersTag} is 200`]: (r) => r.status === 200,
+        [`${getAllStickersTag} has results array`]: (r) => Array.isArray(r.json('results')),
+    });
+
+    check(response[8], {
+        [`${getRxWizardGroupsTag} is 200`]: (r) => r.status === 200,
+        [`${getRxWizardGroupsTag} has results array`]: (r) => Array.isArray(r.json('results')),
+    });
+
+    const due_date = postDueDates(data.authToken);
+
+    const caseId = postCreateCase(data.authToken, due_date);
     sleep(1)
+
+    getCase(data.authToken, caseId);
+    deleteCase(data.authToken, caseId);
+
+    sleep(1);
+}
+
+export function loadTestDoctorCasesPage(data) {
+    const url = `${config.baseUrl}/doctor/cases`;
+    const headers = buildHeaders(data.authToken, {}, getDoctorCasesPageTag);
+
+    const response = http.get(url, headers);
+
+    check(response, {
+        [`${getDoctorCasesPageTag} is 200`]: (r) => r.status === 200,
+    });
+
+    sleep(1);
 }
