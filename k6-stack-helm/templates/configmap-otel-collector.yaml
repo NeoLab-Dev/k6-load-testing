@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector-config
+data:
+  config.yaml: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+    connectors:
+      datadog/connector:
+
+    exporters:
+      datadog/exporter:
+        api:
+          site: datadoghq.com
+          key: ${DATADOG_API_KEY}
+        metrics:
+          resource_attributes_as_tags: true
+        tls:
+          insecure: true
+    processors:
+      batch:
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [datadog/connector, datadog/exporter]
+        metrics:
+          receivers: [datadog/connector, otlp]
+          processors: [batch]
+          exporters: [datadog/exporter]
+
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: k6-scripts
+data:
+  env-config.js: |
+{{ .Files.Get "k6-tests/env-config.js" | indent 4 }}
+  load-tests.js: |
+{{ .Files.Get "k6-tests/load-tests.js" | indent 4 }}
+  utils.js: |
+{{ .Files.Get "k6-tests/utils.js" | indent 4 }}

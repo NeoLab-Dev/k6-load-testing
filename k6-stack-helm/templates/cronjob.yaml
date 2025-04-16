@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: k6-cronjob
 spec:
-  schedule: "*/10 * * * *"  # Пример: запускать каждые 5 минут
+  schedule: "*/10 * * * *"  # Пример: запускать каждые 10 минут
   jobTemplate:
     spec:
       template:
@@ -19,14 +19,24 @@ spec:
             - containerPort: {{ .Values.k6.port }}
             env:
             - name: K6_OUT
-              value: "influxdb={{ .Values.k6.influxdbURL }}"
+              value: "experimental-opentelemetry"
+            - name: K6_OTEL_EXPORTER_TYPE
+              value: "grpc"
+            - name: K6_OTEL_GRPC_EXPORTER_INSECURE
+              value: "true"
+            - name: K6_OTEL_TLS_INSECURE_SKIP_VERIFY
+              value: "true"  
+            - name: K6_OTEL_GRPC_EXPORTER_ENDPOINT
+              value: "otel-collector.default.svc.cluster.local:4317"
+            - name: K6_LOG
+              value: "stdout"  # Для логирования вывода
             volumeMounts:
             - name: test-scripts
               mountPath: "{{ .Values.k6.testScriptsPath }}"
-            command: ["k6", "run", "/k6-tests/load-tests.js"]
+            command: [ "k6", "run", "/k6-tests/load-tests.js"]
           volumes:
             - name: test-scripts
               configMap:
                 name: k6-scripts
   successfulJobsHistoryLimit: 3
-  failedJobsHistoryLimit: 2               
+  failedJobsHistoryLimit: 2
