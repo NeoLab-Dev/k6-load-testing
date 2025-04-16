@@ -23,37 +23,37 @@ spec:
             - name: SCENARIO
               valueFrom:
                 secretKeyRef:
-                  name: k6-load-test-secret
+                  name: k6
                   key: SCENARIO
             - name: ENV
               valueFrom:
                 secretKeyRef:
-                  name: k6-load-test-secret
+                  name: k6
                   key: ENV
             - name: RAMP_UP_STEPS
               valueFrom:
                 secretKeyRef:
-                  name: k6-load-test-secret
+                  name: k6
                   key: RAMP_UP_STEPS
             - name: RAMP_DOWN_STEPS
               valueFrom:
                 secretKeyRef:
-                  name: k6-load-test-secret
+                  name: k6
                   key: RAMP_DOWN_STEPS
             - name: STEP_DURATION
               valueFrom:
                 secretKeyRef:
-                  name: k6-load-test-secret
+                  name: k6
                   key: STEP_DURATION
             - name: HOLD_DURATION
               valueFrom:
                 secretKeyRef:
-                  name: k6-load-test-secret
+                  name: k6
                   key: HOLD_DURATION
             - name: MAX_VUS
               valueFrom:
                 secretKeyRef:
-                  name: k6-load-test-secret
+                  name: k6
                   key: MAX_VUS
             volumeMounts:
             - name: test-scripts

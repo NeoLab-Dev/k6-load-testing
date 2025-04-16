@@ -12,8 +12,8 @@ kind: ConfigMap
 metadata:
   name: grafana-provisioning
 data:
-  dashboard.yaml: |
-{{ .Files.Get "dashboards/grafana-dashboard.yaml" | indent 4 }}
+  dashboard.yml: |
+{{ .Files.Get "dashboards/grafana-dashboard.yml" | indent 4 }}
 
 ---
 apiVersion: v1
@@ -21,8 +21,8 @@ kind: ConfigMap
 metadata:
   name: grafana-datasources
 data:
-  datasource.yaml: |
-{{ .Files.Get "dashboards/grafana-datasource.yaml" | indent 4 }}
+  datasource.yml: |
+{{ .Files.Get "dashboards/grafana-datasource.yml" | indent 4 }}
 
 ---
 apiVersion: v1
