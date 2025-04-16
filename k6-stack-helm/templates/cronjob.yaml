@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: k6-cronjob
 spec:
-  schedule: "*/10 * * * *"  # Пример: запускать каждые 5 минут
+  schedule: "0 7 * * *" 
   jobTemplate:
     spec:
       template:
