@@ -20,6 +20,41 @@ spec:
             env:
             - name: K6_OUT
               value: "influxdb={{ .Values.k6.influxdbURL }}"
+            - name: SCENARIO
+              valueFrom:
+                secretKeyRef:
+                  name: k6-load-test-secret
+                  key: SCENARIO
+            - name: ENV
+              valueFrom:
+                secretKeyRef:
+                  name: k6-load-test-secret
+                  key: ENV
+            - name: RAMP_UP_STEPS
+              valueFrom:
+                secretKeyRef:
+                  name: k6-load-test-secret
+                  key: RAMP_UP_STEPS
+            - name: RAMP_DOWN_STEPS
+              valueFrom:
+                secretKeyRef:
+                  name: k6-load-test-secret
+                  key: RAMP_DOWN_STEPS
+            - name: STEP_DURATION
+              valueFrom:
+                secretKeyRef:
+                  name: k6-load-test-secret
+                  key: STEP_DURATION
+            - name: HOLD_DURATION
+              valueFrom:
+                secretKeyRef:
+                  name: k6-load-test-secret
+                  key: HOLD_DURATION
+            - name: MAX_VUS
+              valueFrom:
+                secretKeyRef:
+                  name: k6-load-test-secret
+                  key: MAX_VUS
             volumeMounts:
             - name: test-scripts
               mountPath: "{{ .Values.k6.testScriptsPath }}"
@@ -29,4 +64,4 @@ spec:
               configMap:
                 name: k6-scripts
   successfulJobsHistoryLimit: 3
-  failedJobsHistoryLimit: 2               
+  failedJobsHistoryLimit: 2

@@ -1,31 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: influxdb
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: influxdb
-  template:
-    metadata:
-      labels:
-        app: influxdb
-    spec:
-      containers:
-      - name: influxdb
-        image: "{{ .Values.influxdb.image }}"
-        ports:
-        - containerPort: {{ .Values.influxdb.port }}
-        env:
-        - name: INFLUXDB_DB
-          value: "{{ .Values.influxdb.db }}"
-
----
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: grafana
 spec:
   replicas: 1
