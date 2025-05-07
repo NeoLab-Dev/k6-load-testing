@@ -1,4 +1,4 @@
 k6:
-  image: grafana/k6:latest
+  image: 314242053345.dkr.ecr.us-east-2.amazonaws.com/k6:7
   port: 6565
   testScriptsPath: /k6-tests

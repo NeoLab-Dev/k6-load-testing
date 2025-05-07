@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: k6-cronjob
 spec:
-  schedule: "*/10 * * * *"  # Пример: запускать каждые 10 минут
+  schedule: "0 7 * * *"  # Пример: запускать каждые 10 минут
   jobTemplate:
     spec:
       template:
@@ -19,15 +19,11 @@ spec:
             - containerPort: {{ .Values.k6.port }}
             env:
             - name: K6_OUT
-              value: "experimental-opentelemetry"
-            - name: K6_OTEL_EXPORTER_TYPE
-              value: "grpc"
-            - name: K6_OTEL_GRPC_EXPORTER_INSECURE
-              value: "true"
-            - name: K6_OTEL_TLS_INSECURE_SKIP_VERIFY
+              value: "output-statsd"
+            - name: K6_STATSD_ENABLE_TAGS
               value: "true"  
-            - name: K6_OTEL_GRPC_EXPORTER_ENDPOINT
-              value: "otel-collector.default.svc.cluster.local:4317"
+            - name: K6_STATSD_ADDR
+              value: "datadog-agent.default.svc.cluster.local:8125"  
             - name: K6_LOG
               value: "stdout"  # Для логирования вывода
             volumeMounts:
