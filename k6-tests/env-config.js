@@ -179,4 +179,42 @@ export const envConfig = {
             ]
         }
     },
+    demo: {
+        baseUrl: 'https://demo.rxwizard.com',
+        doctorUsername: 'k6LoadTestingDoctor',
+        doctorPassword: '70N*S7=+x#WC',
+        officeId: 2990,
+        clientId: 3115,
+        impression: 1,
+        type: 3,
+        jawtype: 1,
+        category: 11,
+        appliance: 12,
+        dueDatesPayload: {
+            categories: [11, 11],
+            configuration: [1, 1],
+            office: 2990,
+            type: 3,
+            impression: 1,
+        },
+    },
+    prod: {
+        baseUrl: 'https://portal.rxwizard.com',
+        doctorUsername: 'k6LoadTestingDoctor',
+        doctorPassword: '70N*S7=+x#WC',
+        officeId: 6518,
+        clientId: 10885,
+        impression: 1,
+        type: 4,
+        jawtype: 1,
+        category: 14,
+        appliance: 28,
+        dueDatesPayload: {
+            categories: [14, 14],
+            configuration: [1, 1],
+            office: 6518,
+            type: 4,
+            impression: 1,
+        },
+    },
 };
