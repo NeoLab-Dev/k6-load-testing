@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: k6-cronjob
 spec:
-  schedule: "0 7 * * *" 
+  schedule: "0 7 * * *"
   jobTemplate:
     spec:
       template:
@@ -19,7 +19,13 @@ spec:
             - containerPort: {{ .Values.k6.port }}
             env:
             - name: K6_OUT
-              value: "influxdb={{ .Values.k6.influxdbURL }}"
+              value: "output-statsd"
+            - name: K6_STATSD_ENABLE_TAGS
+              value: "true"
+            - name: K6_STATSD_ADDR
+              value: "datadog-agent.default.svc.cluster.local:8125"
+            - name: K6_LOG
+              value: "stdout"
             - name: SCENARIO
               valueFrom:
                 secretKeyRef:
@@ -58,7 +64,7 @@ spec:
             volumeMounts:
             - name: test-scripts
               mountPath: "{{ .Values.k6.testScriptsPath }}"
-            command: ["k6", "run", "/k6-tests/load-tests.js"]
+            command: [ "k6", "run", "/k6-tests/load-tests.js"]
           volumes:
             - name: test-scripts
               configMap:
