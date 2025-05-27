@@ -30,10 +30,10 @@ const deleteCaseTag = `DELETE /cases/:id`;
 const getDoctorCasesPageTag = 'GET /doctor/cases';
 
 const allScenarios = {
-    createCaseOnDoctorSide: {
+    createCaseOnDoctorSidePage: {
         executor: 'ramping-vus',
         stages: buildStages(rampUpSteps, rampDownSteps, stepDuration, maxVUs, holdDuration),
-        exec: 'loadTestCreateCaseOnDoctorSide',
+        exec: 'loadTestCreateCaseOnDoctorSidePage',
     },
     doctorCasesPage: {
         executor: 'ramping-vus',
@@ -85,7 +85,7 @@ export function setup() {
         tags: { name: 'POST /auth/login' },
     };
 
-    const response = http.post(url, payload, headers,);
+    const response = http.post(url, payload, headers);
 
     check(response, {
         'login succeeded': (res) => res.status === 200,
@@ -156,7 +156,7 @@ function deleteCase(authToken, caseId) {
     });
 }
 
-export function loadTestCreateCaseOnDoctorSide(data) {
+export function loadTestCreateCaseOnDoctorSidePage(data) {
     let requests = [
         ['GET', `${config.baseUrl}/api/v1/offices/${config.officeId}`, null, buildHeaders(data.authToken, {}, getOfficeTag)],
         ['GET', `${config.baseUrl}/api/v1/client-users/${config.clientId}`, null, buildHeaders(data.authToken, {}, getClientTag)],
@@ -228,13 +228,7 @@ export function loadTestCreateCaseOnDoctorSide(data) {
         [`${getRxWizardGroupsTag} has results array`]: (r) => Array.isArray(r.json('results')),
     });
 
-    const due_date = postDueDates(data.authToken);
-
-    const caseId = postCreateCase(data.authToken, due_date);
-    sleep(1)
-
-    getCase(data.authToken, caseId);
-    deleteCase(data.authToken, caseId);
+    postDueDates(data.authToken);
 
     sleep(1);
 }
