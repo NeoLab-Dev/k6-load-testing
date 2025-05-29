@@ -1,15 +1,12 @@
-# k6 Load Testing with Docker, InfluxDB, and Grafana
+# k6 Load Testing
 
-This project provides a complete setup for running load tests against your CRM using [k6](https://k6.io/) with metrics
-storage in [InfluxDB](https://www.influxdata.com/) and visualization via [Grafana](https://grafana.com/).
+This project provides a complete setup for running load tests against RxWizard using [k6](https://k6.io/).
 
 ---
 
 ## Stack Overview
 
 - **k6** — load testing tool with JavaScript-based scripting
-- **InfluxDB** — time-series database for metrics
-- **Grafana** — dashboards to visualize test results
 - **Docker Compose** — for container orchestration
 
 ---
@@ -17,7 +14,9 @@ storage in [InfluxDB](https://www.influxdata.com/) and visualization via [Grafan
 ## Test Scenarios
 
 ### `createCaseOnDoctorSidePage`
+
 Simulates a doctor opening the "Create Case" page:
+
 - Performs multiple `GET` requests to fetch form data:
     - Office, client
     - Impressions, types, categories, appliances, stickers
@@ -25,10 +24,11 @@ Simulates a doctor opening the "Create Case" page:
 - Does **not** create the case — this only simulates **initial form load**.
 
 ### `doctorCasesPage`
+
 Simulates a doctor viewing the list of their cases:
+
 - Single `GET` request to `/doctor/cases`
 - Useful for measuring page load under user concurrency
-
 
 ## Quick Start (Locally)
 
@@ -70,17 +70,7 @@ docker-compose run --rm k6 run \
 | `STEP_DURATION`   | Duration of each ramp step                    | `10s`                        |
 | `HOLD_DURATION`   | Duration to hold max VUs                      | `10s`                        |
 
-## Setting Up Grafana
+## Hosting Setup
 
-### 1. Go to: http://localhost:3000
 
-### 2. Add InfluxDB as a data source:
 
-- Name: k6influxdb
-- URL: http://influxdb:8086
-- Database: k6
-
-### 3. Import the k6 Grafana dashboard
-
-- Upload dashboard JSON file: `./k6-load-testing/dashboards/k6-load-testing-dashboard.json`
-- Unique identifier (UID): paste from influxDB data source
