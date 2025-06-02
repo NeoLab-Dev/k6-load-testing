@@ -49,7 +49,7 @@ const filteredScenarios = Object.fromEntries(
 );
 
 const scenarioTags = {
-    createCaseOnDoctorSide: [
+    createCaseOnDoctorSidePage: [
         getOfficeTag,
         getClientTag,
         getAllImpressionsTag,
@@ -60,9 +60,6 @@ const scenarioTags = {
         getAllStickersTag,
         getRxWizardGroupsTag,
         postDueDatesTag,
-        postCreateCaseTag,
-        getCaseTag,
-        deleteCaseTag,
     ],
     doctorCasesPage: [
         getDoctorCasesPageTag,
@@ -72,6 +69,7 @@ const scenarioTags = {
 export const options = {
     scenarios: filteredScenarios,
     thresholds: buildThresholds(enabledScenarioNames, scenarioTags),
+    summaryTrendStats: ['avg', 'min', 'med', 'p(75)', 'p(90)', 'p(95)', 'max'],
 };
 
 export function setup() {

@@ -69,8 +69,3 @@ docker-compose run --rm k6 run \
 | `RAMP_DOWN_STEPS` | Number of ramp-down steps                     | `2`                          |
 | `STEP_DURATION`   | Duration of each ramp step                    | `10s`                        |
 | `HOLD_DURATION`   | Duration to hold max VUs                      | `10s`                        |
-
-## Hosting Setup
-
-
-
