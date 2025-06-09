@@ -20,9 +20,9 @@ export const envConfig = {
         createCasePayload: {
             office: 677,
             doctor: 1181,
-            patient_first_name: "John",
-            patient_last_name: "Doe",
-            appointment_date: "",
+            patient_first_name: 'John',
+            patient_last_name: 'Doe',
+            appointment_date: '',
             impression: 1,
             type: 4,
             due_date: null,
@@ -33,7 +33,7 @@ export const envConfig = {
                 {
                     category: 14,
                     appliance: 18,
-                    instructions: "upper instructions",
+                    instructions: 'upper instructions',
                     configuration: 6893,
                     jaw_type: 1,
                     impression: 1,
@@ -80,7 +80,7 @@ export const envConfig = {
                                 9,
                                 10
                             ],
-                            shade: "shade"
+                            shade: 'shade'
                         },
                         {
                             product: 123744,
@@ -168,7 +168,7 @@ export const envConfig = {
                                 3,
                                 11
                             ],
-                            shade: "shade"
+                            shade: 'shade'
                         }
                     ],
                     color: 86,
@@ -197,6 +197,164 @@ export const envConfig = {
             type: 3,
             impression: 1,
         },
+        createCasePayload: {
+            office: 2990,
+            doctor: 3115,
+            patient_first_name: 'John',
+            patient_last_name: 'Doe',
+            appointment_date: '',
+            impression: 1,
+            type: 3,
+            due_date: null,
+            rush_case: false,
+            patient_shipping_data: null,
+            client_files: [],
+            orders: [
+                {
+                    category: 11,
+                    appliance: 12,
+                    instructions: 'upper instructions',
+                    configuration: 2221,
+                    jaw_type: 1,
+                    impression: 1,
+                    type: 3,
+                    products: [
+                        {
+                            product: 43496
+                        },
+                        {
+                            product: 43502,
+                            options: [
+                                5,
+                                4,
+                                12,
+                                13
+                            ]
+                        },
+                        {
+                            product: 43511
+                        },
+                        {
+                            product: 43518
+                        },
+                        {
+                            product: 43525,
+                            options: [
+                                2,
+                                1,
+                                9,
+                                10
+                            ]
+                        },
+                        {
+                            product: 43534
+                        },
+                        {
+                            product: 43540
+                        },
+                        {
+                            product: 43544,
+                            options: [
+                                2,
+                                1,
+                                9,
+                                10
+                            ],
+                            shade: 'shade'
+                        },
+                        {
+                            product: 43545,
+                            options: [
+                                27
+                            ]
+                        },
+                        {
+                            product: 43546
+                        },
+                        {
+                            product: 43547
+                        },
+                        {
+                            product: 43548
+                        },
+                        {
+                            product: 43552
+                        },
+                        {
+                            product: 43564,
+                            options: [
+                                2,
+                                1,
+                                9,
+                                10
+                            ]
+                        },
+                        {
+                            product: 43567
+                        }
+                    ],
+                    color: 1,
+                    customizer_groups: [
+                        1
+                    ]
+                },
+                {
+                    category: 11,
+                    appliance: 12,
+                    configuration: 2221,
+                    jaw_type: 2,
+                    impression: 1,
+                    type: 3,
+                    products: [
+                        {
+                            product: 43571
+                        },
+                        {
+                            product: 43577,
+                            options: [
+                                5,
+                                4,
+                                12,
+                                13
+                            ]
+                        },
+                        {
+                            product: 43586
+                        },
+                        {
+                            product: 43593
+                        },
+                        {
+                            product: 43600,
+                            options: [
+                                2,
+                                1,
+                                9,
+                                10
+                            ]
+                        },
+                        {
+                            product: 43609
+                        },
+                        {
+                            product: 43615
+                        },
+                        {
+                            product: 43619,
+                            options: [
+                                3,
+                                11
+                            ],
+                            shade: 'shade'
+                        }
+                    ],
+                    color: 1,
+                    customizer_groups: [
+                        1
+                    ]
+                }
+            ]
+        }
     },
     prod: {
         baseUrl: 'https://portal.rxwizard.com',
