@@ -26,6 +26,7 @@ const getRxWizardGroupsTag = `GET /rxwizard_groups`;
 const postDueDatesTag = 'POST /due-dates';
 const postCreateCaseTag = `POST /cases`;
 const getCaseTag = `GET /cases/:id`;
+const patchCaseTag = `PATCH /cases/:id`;
 const deleteCaseTag = `DELETE /cases/:id`;
 const getDoctorCasesPageTag = 'GET /doctor/cases';
 
@@ -59,7 +60,7 @@ const scenarioTags = {
         getRxMappingsTag,
         getAllStickersTag,
         getRxWizardGroupsTag,
-        postDueDatesTag,
+        ...(ENV !== 'prod' ? [postDueDatesTag, postCreateCaseTag, getCaseTag, patchCaseTag, deleteCaseTag] : []),
     ],
     doctorCasesPage: [
         getDoctorCasesPageTag,
@@ -141,13 +142,37 @@ function getCase(authToken, caseId) {
         [`${getCaseTag} has id in response`]: (r) => r.json('id') !== undefined,
         [`${getCaseTag} id is equal ${caseId}`]: (r) => r.json('id') === caseId,
     });
+
+    return response.json('id');
+}
+
+function updateCase(authToken, caseId) {
+    const url = `${config.baseUrl}/api/v1/cases/${caseId}`;
+    const payload = JSON.stringify({
+        orders: config.createCasePayload.orders,
+        patient_first_name: 'John_0',
+        patient_last_name: 'Doe_0',
+        type: 4,
+        file_send_via: 1
+    });
+    const headers = buildHeaders(authToken, {}, patchCaseTag);
+
+    const response = http.patch(url, payload, headers);
+
+    check(response, {
+        [`${patchCaseTag} is 200`]: (r) => r.status === 200,
+        [`${patchCaseTag} has id in response`]: (r) => r.json('id') !== undefined,
+        [`${patchCaseTag} id is equal ${caseId}`]: (r) => r.json('id') === caseId,
+    });
+
+    return response.json('id');
 }
 
 function deleteCase(authToken, caseId) {
     const url = `${config.baseUrl}/api/v1/cases/${caseId}`;
-    const headers = buildHeaders(authToken, {}, deleteCaseTag);
+    const headers = buildHeaders(authToken, {}, deleteCaseTag, false);
 
-    const response = http.del(url, headers);
+    const response = http.del(url, null, headers);
 
     check(response, {
         [`${deleteCaseTag} is 204`]: (r) => r.status === 204,
@@ -226,7 +251,20 @@ export function loadTestCreateCaseOnDoctorSidePage(data) {
         [`${getRxWizardGroupsTag} has results array`]: (r) => Array.isArray(r.json('results')),
     });
 
-    postDueDates(data.authToken);
+    if (ENV !== 'prod') {
+        const dueDate = postDueDates(data.authToken);
+
+        let caseId = postCreateCase(data.authToken, dueDate);
+
+        sleep(1);
+
+        caseId = getCase(data.authToken, caseId);
+        caseId = updateCase(data.authToken, caseId);
+
+        sleep(1);
+
+        deleteCase(data.authToken, caseId);
+    }
 
     sleep(1);
 }
