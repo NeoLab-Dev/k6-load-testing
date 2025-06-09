@@ -1,14 +1,21 @@
-export function buildHeaders(authToken, queryParams = {}, tagName = '') {
-    return {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Token ${authToken}`,
-        },
-        params: queryParams,
+export function buildHeaders(authToken, queryParams = {}, tagName = '', includeParams = true) {
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${authToken}`,
+    };
+
+    const result = {
+        headers,
         tags: {
             name: tagName
-        },
+        }
     };
+
+    if (includeParams) {
+        result.params = queryParams;
+    }
+
+    return result;
 }
 
 export function buildStages(rampUpSteps, rampDownSteps, stepDuration, maxVUs, holdDuration) {
