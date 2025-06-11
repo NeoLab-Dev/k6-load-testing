@@ -357,7 +357,7 @@ export const envConfig = {
         }
     },
     prod: {
-        baseUrl: 'https://portal.rxwizard.com',
+        baseUrl: 'https://prod.rxwizard.com',
         doctorUsername: 'k6LoadTestingDoctor',
         doctorPassword: '70N*S7=+x#WC',
         officeId: 6518,
