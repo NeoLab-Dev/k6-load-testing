@@ -60,7 +60,11 @@ const scenarioTags = {
         getRxMappingsTag,
         getAllStickersTag,
         getRxWizardGroupsTag,
-        ...(ENV !== 'prod' ? [postDueDatesTag, postCreateCaseTag, getCaseTag, patchCaseTag, deleteCaseTag] : []),
+        postDueDatesTag,
+        postCreateCaseTag,
+        getCaseTag,
+        patchCaseTag,
+        deleteCaseTag,
     ],
     doctorCasesPage: [
         getDoctorCasesPageTag,
@@ -251,20 +255,18 @@ export function loadTestCreateCaseOnDoctorSidePage(data) {
         [`${getRxWizardGroupsTag} has results array`]: (r) => Array.isArray(r.json('results')),
     });
 
-    if (ENV !== 'prod') {
-        const dueDate = postDueDates(data.authToken);
+    const dueDate = postDueDates(data.authToken);
 
-        let caseId = postCreateCase(data.authToken, dueDate);
+    let caseId = postCreateCase(data.authToken, dueDate);
 
-        sleep(1);
+    sleep(1);
 
-        caseId = getCase(data.authToken, caseId);
-        caseId = updateCase(data.authToken, caseId);
+    caseId = getCase(data.authToken, caseId);
+    caseId = updateCase(data.authToken, caseId);
 
-        sleep(1);
+    sleep(1);
 
-        deleteCase(data.authToken, caseId);
-    }
+    deleteCase(data.authToken, caseId);
 
     sleep(1);
 }

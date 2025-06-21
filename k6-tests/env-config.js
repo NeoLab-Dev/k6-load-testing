@@ -374,5 +374,171 @@ export const envConfig = {
             type: 4,
             impression: 1,
         },
+        createCasePayload: {
+            office: 6518,
+            doctor: 10885,
+            patient_first_name: 'John',
+            patient_last_name: 'Doe',
+            appointment_date: '',
+            impression: 1,
+            type: 4,
+            due_date: null,
+            rush_case: false,
+            patient_shipping_data: null,
+            client_files: [],
+            orders: [
+                {
+                    category: 14,
+                    appliance: 28,
+                    instructions: 'upper instructions',
+                    configuration: 5706,
+                    jaw_type: 1,
+                    impression: 1,
+                    type: 4,
+                    products: [
+                        {
+                            product: 85937
+                        },
+                        {
+                            product: 85943,
+                            options: [
+                                5,
+                                4,
+                                12,
+                                13
+                            ]
+                        },
+                        {
+                            product: 85952
+                        },
+                        {
+                            product: 85959
+                        },
+                        {
+                            product: 85967,
+                            options: [
+                                2,
+                                1,
+                                9,
+                                10
+                            ]
+                        },
+                        {
+                            product: 85976
+                        },
+                        {
+                            product: 85982
+                        },
+                        {
+                            product: 85983
+                        },
+                        {
+                            product: 85986,
+                            options: [
+                                2,
+                                1,
+                                9,
+                                10
+                            ],
+                            shade: 'shade'
+                        },
+                        {
+                            product: 85987,
+                            options: [
+                                2,
+                                1,
+                                9,
+                                10
+                            ]
+                        },
+                        {
+                            product: 85988
+                        },
+                        {
+                            product: 85989
+                        },
+                        {
+                            product: 85990
+                        },
+                        {
+                            product: 85998
+                        },
+                        {
+                            product: 86009,
+                            options: [
+                                2,
+                                1,
+                                9,
+                                10
+                            ]
+                        },
+                        {
+                            product: 86012
+                        }
+                    ],
+                    color: 86,
+                    customizer_groups: [
+                        9
+                    ]
+                },
+                {
+                    category: 14,
+                    appliance: 28,
+                    configuration: 5706,
+                    jaw_type: 2,
+                    impression: 1,
+                    type: 4,
+                    products: [
+                        {
+                            product: 86016
+                        },
+                        {
+                            product: 86022,
+                            options: [
+                                5,
+                                4,
+                                12,
+                                13
+                            ]
+                        },
+                        {
+                            product: 86031
+                        },
+                        {
+                            product: 86038
+                        },
+                        {
+                            product: 86045,
+                            options: [
+                                2,
+                                1,
+                                9,
+                                10
+                            ]
+                        },
+                        {
+                            product: 86054
+                        },
+                        {
+                            product: 86060
+                        },
+                        {
+                            product: 86063,
+                            options: [
+                                2,
+                                1,
+                                9,
+                                10
+                            ],
+                            shade: 'shade'
+                        }
+                    ],
+                    color: 86,
+                    customizer_groups: [
+                        9
+                    ]
+                }
+            ]
+        }
     },
 };
