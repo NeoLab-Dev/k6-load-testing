@@ -262,7 +262,7 @@ export function loadTestCreateCaseOnDoctorSidePage(data) {
     sleep(1);
 
     caseId = getCase(data.authToken, caseId);
-    caseId = updateCase(data.authToken, caseId);
+    // caseId = updateCase(data.authToken, caseId);
 
     sleep(1);
 
