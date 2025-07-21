@@ -19,11 +19,7 @@ spec:
             - containerPort: {{ .Values.k6.port }}
             env:
             - name: K6_OUT
-              value: "output-statsd"
-            - name: K6_STATSD_ENABLE_TAGS
-              value: "true"
-            - name: K6_STATSD_ADDR
-              value: "datadog-agent.default.svc.cluster.local:8125"
+              value: "influxdb=http://influxdb:8086/k6"
             - name: K6_LOG
               value: "stdout"
             - name: SCENARIO
