@@ -14,8 +14,8 @@ const config = envConfig[ENV];
 
 const SELECTED_SCENARIO = __ENV.SCENARIO || 'all';
 
-const getOfficeTag = `GET /offices/${config.officeId}`;
-const getClientTag = `GET /client-users/${config.clientId}`;
+const getOfficeTag = `GET /offices/:id`;
+const getClientTag = `GET /client-users/:id`;
 const getAllImpressionsTag = `GET ALL /impressions`;
 const getAllTypesTag = `GET ALL /types`;
 const getAllCategoriesTag = `GET ALL /categories`;
@@ -91,7 +91,7 @@ export function setup() {
     const response = http.post(url, payload, headers);
 
     check(response, {
-        'login succeeded': (res) => res.status === 200,
+        'POST /auth/login succeeded': (res) => res.status === 200,
     });
 
     const authToken = response.json('auth_token');
