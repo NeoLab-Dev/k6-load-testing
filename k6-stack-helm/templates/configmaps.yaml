@@ -1,6 +1,33 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: grafana-dashboards
+data:
+  k6-load-testing-dashboard.json: |
+{{ .Files.Get "dashboards/k6-load-testing-dashboard.json" | indent 4 }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-provisioning
+data:
+  dashboard.yml: |
+{{ .Files.Get "dashboards/grafana-dashboard.yml" | indent 4 }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+data:
+  datasource.yml: |
+{{ .Files.Get "dashboards/grafana-datasource.yml" | indent 4 }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: k6-scripts
 data:
   env-config.js: |
