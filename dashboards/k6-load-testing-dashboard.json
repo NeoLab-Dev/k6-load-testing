@@ -19,7 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 2,
-  "id": 4,
+  "id": 2,
   "links": [],
   "panels": [
     {
@@ -530,6 +530,7 @@
       "pluginVersion": "11.6.0",
       "targets": [
         {
+          "alias": "",
           "datasource": {
             "type": "influxdb",
             "uid": "k6influxdb"
@@ -1635,7 +1636,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 30
+        "y": 43
       },
       "id": 25,
       "panels": [],
@@ -1678,7 +1679,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 31
+        "y": 44
       },
       "id": 24,
       "options": {
@@ -1772,8 +1773,8 @@
       },
       {
         "current": {
-          "text": "POST /due-dates",
-          "value": "POST /due-dates"
+          "text": "All",
+          "value": "$__all"
         },
         "definition": "SHOW TAG VALUES FROM \"http_req_duration\" WITH KEY = \"name\"",
         "includeAll": true,
@@ -1790,12 +1791,12 @@
     ]
   },
   "time": {
-    "from": "2025-07-18T06:10:25.536Z",
-    "to": "2025-07-18T06:11:28.545Z"
+    "from": "now-30m",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "k6 Load Testing Results Copy",
+  "title": "k6 Load Testing Results",
   "uid": "",
-  "version": 2
+  "version": 1
 }
